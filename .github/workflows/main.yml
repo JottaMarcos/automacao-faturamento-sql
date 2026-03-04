@@ -1,0 +1,38 @@
+name: Executar Script de Faturamento
+
+# 1. Define quando o script vai rodar
+on:
+  schedule:
+    - cron: '0 8 * * *' # Isso faz o script rodar todo dia às 08:00 AM (Horário UTC)
+  workflow_dispatch:   # Isso cria um botão "Run workflow" para você testar manualmente
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # O GitHub vai abrir um computador Linux virtual para rodar seu código
+
+    steps:
+      # Passo 1: Copia os seus arquivos (comando.py e requirements.txt) para esse computador virtual
+      - name: Baixar código do repositório
+        uses: actions/checkout@v3
+
+      # Passo 2: Instala o Python 3.9
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # Passo 3: Instala as bibliotecas que estão no seu arquivo requirements.txt
+      - name: Instalar bibliotecas
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Passo 4: O "Grand Finale" - Roda o seu script usando os segredos do GitHub
+      - name: Executar Script de Faturamento
+        env:
+          # Aqui o GitHub pega os "Secrets" que você cadastrou e entrega para o Python
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: python comando.py
