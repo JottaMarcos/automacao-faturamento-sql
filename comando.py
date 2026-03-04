@@ -6,7 +6,7 @@ load_dotenv()
 
 try:
     conexao = psycopg2.connect(
-        host="aws-0-sa-east-1.pooler.supabase.com",
+        host="aws-1-us-east-1.pooler.supabase.com",
         user="postgres.ltaxntxapuekaguwuylj",
         password=os.getenv('DB_PASS'), # Usando o Secret por segurança
         database="postgres",
@@ -27,3 +27,4 @@ try:
 
 except Exception as e:
     print(f"❌ Erro de conexão: {e}")
+
