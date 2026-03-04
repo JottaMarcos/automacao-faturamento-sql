@@ -1,27 +1,30 @@
 import psycopg2
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 try:
-    # Colocando os dados DIRETO aqui para o GitHub não ter como errar
     conexao = psycopg2.connect(
-        host="aws-0-sa-east-1.pooler.supabase.com",
-        user="postgres.ltaxntxapuekaguwuylj",
-        password="Jottamarcos07", # <--- COLOQUE A SENHA QUE VOCÊ CRIOU
-        database="postgres",
-        port="6543"
+        host=os.getenv('DB_HOST'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASS'),
+        database=os.getenv('DB_NAME'),
+        port=os.getenv('DB_PORT')
     )
     
     cursor = conexao.cursor()
-    print("✅ CONEXÃO ESTABELECIDA COM O SUPABASE!")
+    print("✅ CONECTADO AO SUPABASE COM SUCESSO!")
 
     cursor.execute("SELECT * FROM vendas;")
     vendas = cursor.fetchall()
 
+    print("\n--- RELATÓRIO DE VENDAS ---")
     for venda in vendas:
-        print(f"Produto: {venda[3]} | Valor: R$ {venda[2]}")
+        print(f"ID: {venda[0]} | Produto: {venda[3]} | Valor: R$ {venda[2]}")
 
     cursor.close()
     conexao.close()
 
 except Exception as e:
-    print(f"❌ Erro real de conexão: {e}")
+    print(f"❌ Erro de conexão: {e}")
